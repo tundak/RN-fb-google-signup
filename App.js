@@ -7,23 +7,64 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View,Button,Icon} from 'react-native';
+import { LoginManager, AccessToken} from 'react-native-fbsdk';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
-type Props = {};
 export default class App extends Component<Props> {
+
+    handleFacebookLogin = async () => {
+            LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(
+              function (result) {
+                //console.log(result);
+                if (result.isCancelled) {
+                  console.log('Login cancelled')
+                } else {
+                  console.log('Login success with permissions: ' + result.grantedPermissions.toString())
+
+                  AccessToken.getCurrentAccessToken().then(
+                        (data) => {
+                          //console.log(data.accessToken);
+                          //console.log(data.userID);
+                          fetch('https://graph.facebook.com/v2.5/me?fields=email,name,friends&access_token=' + data.accessToken)
+                            .then((response) => response.json())
+                            .then(async(json) => {
+                              // Some user object has been set up somewhere, build that user here
+                              console.log(json);
+                              user.name = json.name
+                              user.id = json.id
+                              user.email = json.email
+                              user.username = json.name
+                            })
+                            .catch(() => {
+                              reject('ERROR GETTING DATA FROM FACEBOOK')
+                            })
+                        }
+                      )
+                }
+              },
+              function (error) {
+                console.log('Login fail with error: ' + error)
+              }
+            )
+        }
+
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        <Button
+          buttonStyle={styles.fbbtn}
+          icon={
+            <Icon
+              name='facebook-f'
+              size={15}
+              color='white'
+            />
+          }
+          iconLeft
+          title='Login with Faceook'
+          onPress={this.handleFacebookLogin}
+        />
       </View>
     );
   }
@@ -36,14 +77,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  fbbtn:{
+        width: 315,
+        height: 50,
+        marginTop:70,
+        borderColor: "transparent",
+        borderWidth: 0,
+        borderRadius: 40,
+        backgroundColor: "#4D62BB",
   },
 });

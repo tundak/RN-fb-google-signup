@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">fbgoogle</string>
+    <string name="facebook_app_id">38694xxxxxxxxxx</string>
+    <string name="app_name">YourAppName</string>
 </resources>
