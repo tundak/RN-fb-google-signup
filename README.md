@@ -1,10 +1,7 @@
 # React-native-facebook-signup
 
-Step1: Add fbsdk and link https://github.com/facebook/react-native-fbsdk
-Step2: configure native projects by following given steps
-Step3: Add fb app id and name in `strings.xml`
+fbsdk and link https://github.com/facebook/react-native-fbsdk
 
-OR
 
 1. git clone the project & cd to project
 2. `npm install`
